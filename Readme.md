@@ -49,12 +49,20 @@ jet -dsn='postgresql://localhost:5432/postgres?sslmode=disable' -schema=public -
 ```
 
 ![img_1.png](img_1.png)
-
-
-
-
+JOOQ 랑 가장 비슷한 형식의 라이브러리 인 듯 하다. 이걸로 정하자.
 
 ## golang에서 테스트 코드란?
+
+
+
+
+## DI Container in Go?
+
+[wire](https://github.com/google/wire)
+[uber/dig](https://github.com/uber-go/dig)
+[inject](https://github.com/facebookarchive/inject)
+
+찾아보니.. 크게 위의 3가지 라이브러리가 주로 쓰이고 있는 것 같다. 가급적 수동 DI를 유지하기로 결정  
 
 ## golang에서 환경변수 관리법
 
@@ -78,6 +86,17 @@ godotenv?
 ## makeFile?
 
 
-## 
+## 컨벤션?
+
+[뱅크샐러드 Go 코딩 컨벤션](https://blog.banksalad.com/tech/go-best-practice-in-banksalad/)
+
+
+# panic recover 
+
+[panic-and-recover-more](https://go101.org/article/panic-and-recover-more.html)
+
+
+
+
 
 
