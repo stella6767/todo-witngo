@@ -1,4 +1,4 @@
-package ui
+package view
 
 import (
 "todo-app/internal/db"
@@ -12,11 +12,11 @@ templ TodoList(todos []db.Todo) {
     <div class="flex items-center p-4 bg-white rounded-lg shadow">
         <input
                 type="checkbox"
-                checked={todo.Completed}
-                hx-put={"/todos/" + strconv.Itoa(todo.ID) + "/status"}
+                checked={strconv.FormatBool(todo.Completed)}
+
         class="w-4 h-4 mr-3"
         />
-        if todo.Cpmlected {
+        if todo.Completed {
             <div>Welcome back!</div>
             <span class={"text-gray-700" +"line-through opacity-50"} >
             {todo.Title}

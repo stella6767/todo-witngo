@@ -23,12 +23,6 @@ func NewTodoRepository(q *db.Queries) TodoRepository {
 	return &todoRepository{queries: q}
 }
 
-func test(todo db.Todo) {
-
-	//todo.ID.String()
-
-}
-
 func (r *todoRepository) CreateTodo(ctx context.Context, userID int32, title string) (db.Todo, error) {
 	return r.queries.CreateTodo(ctx, db.CreateTodoParams{
 		UserID: pgtype.Int4{Int32: userID, Valid: true},

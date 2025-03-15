@@ -1,6 +1,7 @@
-package ui
+package view
 
 templ Test() {
-    @message := "Hello, Templ!" // 변수 선언
+
+    {{ message := "Hello, Templ!" }}
     <div>{ message }</div>      // 변수 사용
 }
