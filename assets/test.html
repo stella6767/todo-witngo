@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"
+            integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+            crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/multi-swap.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.1/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <link rel="stylesheet" href="/styles.css" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.0.3/dist/full.css" rel="stylesheet">
+</head>
+<body>
+<div id="h-screen bg-gry">
+    <div class="h-full w-full flex items-center justify-center bg-teal-lightest font-sans">
+        <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
+            <div class="mb-4">
+                <h1 class="text-5xl font-bold text-primary">Todo List</h1>
+                <div class="flex mt-4">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
+                           id="new-todo"
+                           name="newTodo"
+                           placeholder="To do..."
+                           required
+                           type="text"
+                           autofocus>
+                    <button class="flex-no-shrink p-2 border-2 rounded text-info-content border-teal hover:text-white hover:bg-teal"
+                            hx-include="#new-todo"
+                            hx-trigger="click"
+                            hx-post="/todo"
+                            hx-target="#todo-list"
+                            hx-swap="afterbegin"
+                            hx-on--after-request="document.getElementById('new-todo').value='';">
+                        Add
+                    </button>
+                </div>
+            </div>
+            <div id="todo-list">
+                <!-- Todo items will be dynamically inserted here -->
+                <div id="todo-container-1">
+                    <div class="flex mb-4 items-center" id="todo-box">
+                        <p class="w-full text-info-content">Example Todo</p>
+                        <button class="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded hover:text-white text-info-content border-green hover:bg-green"
+                                hx-trigger="click"
+                                hx-put="/todo/1"
+                                hx-target="#todo-container-1"
+                                hx-swap="innerHTML">
+                            Done
+                        </button>
+                        <button class="flex-no-shrink p-2 ml-2 border-2 rounded text-info-content border-red hover:text-white hover:bg-red"
+                                hx-confirm="Are you sure?"
+                                hx-swap="outerHTML swap:1s"
+                                hx-trigger="click"
+                                hx-delete="/todo/1"
+                                hx-target="closest div">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center" id="page-view">
+        <div class="join">
+            <button class="join-item btn"
+                    hx-trigger="click"
+                    hx-get="/todos?page=0"
+                    hx-swap="multi:#todo-list,#page-view">
+                First
+            </button>
+            <button class="join-item btn">
+                &lt;&lt;
+            </button>
+            <!-- Pagination numbers -->
+            <button class="join-item btn btn-square">1</button>
+            <button class="join-item btn btn-square btn-active bg-accent">2</button>
+            <button class="join-item btn">>></button>
+            <button class="join-item btn"
+                    hx-trigger="click"
+                    hx-get="/todos?page=10"
+                    hx-swap="multi:#todo-list,#page-view">
+                Last
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer class="footer footer-center p-4 bg-base-300 text-base-content" id="footer">
+    <div>
+        <p>Created by Stella6767</p>
+        <p>📞 alsrb9434@gmail.com</p>
+        <a href="https://github.com/stella6767"
+           target="_blank"
+           style="text-decoration: none;">
+            GitHub
+        </a>
+    </div>
+</footer>
+</body>
+</html>

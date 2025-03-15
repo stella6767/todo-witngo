@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+<div class="h-screen bg-blue-500 flex flex-col justify-center items-center">
+
+    <div class="items-center h-2/3 w-1/2 bg-white">
+        <div class="flex items-center px-6 pt-4">
+            <h1 class="text-5xl font-bold">Todo List</h1>
+        </div>
+        <div class="flex p-6 ">
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker" id="new-todo"
+                   name="newTodo" placeholder="To do..." required="" type="text" autofocus="">
+
+            <button class="flex-no-shrink p-2 border-2 rounded text-info-content border-teal hover:text-white hover:bg-teal"
+                    hx-include="#new-todo" hx-trigger="click" hx-post="/todo" hx-target="#todo-list"
+                    hx-swap="afterbegin" hx-on--after-request="document.getElementById('new-todo').value='';">
+                Add
+            </button>
+        </div>
+        <div id="todo-list">
+            <div class="flex mb-4 items-center px-6" id="todo-box">
+                <p class="w-full text-info-content">Example Todo</p>
+                <button class="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded hover:text-white text-info-content border-green hover:bg-green"
+                        hx-trigger="click" hx-put="/todo/1" hx-target="#todo-container-1" hx-swap="innerHTML">
+                    Done
+                </button>
+                <button class="flex-no-shrink p-2 ml-2 border-2 rounded text-info-content border-red hover:text-white hover:bg-red"
+                        hx-confirm="Are you sure?" hx-swap="outerHTML swap:1s" hx-trigger="click" hx-delete="/todo/1"
+                        hx-target="closest div">
+                    Remove
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div>
+        dads
+    </div>
+
+</div>
+</body>
+</html>

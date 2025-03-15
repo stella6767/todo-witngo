@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"todo-app/internal/db"
 	"todo-app/internal/repository"
 )
 
@@ -14,16 +12,6 @@ type TodoHandler struct {
 
 func NewTodoHandler(repo repository.TodoRepository) *TodoHandler {
 	return &TodoHandler{repo: repo}
-}
-
-func TodoList(todos []db.Todo) {
-
-	for i := 0; i < len(todos); i++ {
-
-		todo := todos[i]
-
-		fmt.Print(todo.ID)
-	}
 }
 
 func (h *TodoHandler) CreateTodo(c *gin.Context) {
@@ -44,5 +32,5 @@ func (h *TodoHandler) CreateTodo(c *gin.Context) {
 		return
 	}
 
-	c.Render(http.StatusOK, ui.TodoItem(todo))
+	//c.Render(http.StatusOK, ui.TodoList(todo))
 }

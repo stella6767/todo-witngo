@@ -13,17 +13,18 @@ templ TodoList(todos []db.Todo) {
         <input
                 type="checkbox"
                 checked={todo.Completed}
-                hx-put={"/todos/" + todo.ID.String() + "/status"}
+                hx-put={"/todos/" + strconv.Itoa(todo.ID) + "/status"}
         class="w-4 h-4 mr-3"
         />
         if todo.Cpmlected {
-        <div>Welcome back!</div>
-        <span class={"text-gray-700" + "line-through opacity-50"} >
-        {todo.Title}
-        </span>
-        } else {
-        <input name="login" type="button" value="Log in"/>
-
+            <div>Welcome back!</div>
+            <span class={"text-gray-700" +"line-through opacity-50"} >
+            {todo.Title}
+            </span>
+            } else {
+            <span class="text-gray-700">
+                {todo.Title}
+            </span>
         }
 
 
