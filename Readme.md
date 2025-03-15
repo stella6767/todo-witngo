@@ -1,5 +1,12 @@
 
 
+## go path preSetup 
+
+```azure
+~/GolandProjects/todo-app main !1 ❯ sudo chown -R $(whoami):staff /Users/{username}/go      
+~/GolandProjects/todo-app main !1 ❯ chmod -R 755 /Users/{username}/go
+```
+
 ## templ cli
 
 ![img.png](img.png)
@@ -11,6 +18,40 @@ export PATH="$PATH:/usr/local/go/bin/bin"
 ## sqlc
 
 [Getting started with PostgreSQL](https://docs.sqlc.dev/en/latest/tutorials/getting-started-postgresql.html)
+
+[sqlc overrides](https://docs.sqlc.dev/en/stable/howto/overrides.html)
+
+[여러분은 pgx pgtype 보일러플레이트를 어떻게 다루고 계신가요?](https://www.reddit.com/r/golang/comments/1h5q7ng/how_are_you_guys_dealing_with_pgx_pgtype/)
+
+```azure
+# example
+overrides:
+   - db_type: "pg_catalog.int4"
+     nullable: true
+     go_type:
+       type:  "int"
+```
+
+실제로 써보니 쿼리빌더라기보다, 원시 sql 작성하면 그걸 기반으로 repository 계층 코드를 generate 해주는 코드생성도구에 가깝다.
+JVM에서의 JOOQ 같은 걸 기대했는데, 생각보다 더 원시적이다. 런타임에 동적인 코드 생성이 불가능? 한 것 같다. 더 알아보아야 겠지만,
+특히 짜증나는 건, postgres 쓰면 pgtype을 import 해줘야 되는데, 이걸 go native type으로 변환시키는 작업을 일일히 해야 된다는 점이다.
+위의 overrides 설정을 적용하면 일부 해결이 되는 것 같은데, 또 안 되는 것도 있고 하.. 짜증이 난다. 일단 폐기처분.
+
+
+## go-jet
+
+[go-jet])(https://github.com/go-jet/jet?tab=readme-ov-file#features)
+
+```azure
+$ go get -u github.com/go-jet/jet/v2
+go install github.com/go-jet/jet/v2/cmd/jet@latest
+jet -dsn='postgresql://localhost:5432/postgres?sslmode=disable' -schema=public -path=./.gen
+```
+
+![img_1.png](img_1.png)
+
+
+
 
 
 ## golang에서 테스트 코드란?
