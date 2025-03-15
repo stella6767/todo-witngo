@@ -22,3 +22,14 @@ func TestInitApp(t *testing.T) { // 테스트
 	result := config.InitAppDependency()
 	fmt.Print(result)
 }
+
+func TestViper(t *testing.T) {
+
+	loadConfig, err := config.LoadConfig()
+	if err != nil {
+		fmt.Errorf("Fatal error config file: %s \n", err)
+	}
+
+	fmt.Print(loadConfig)
+
+}
