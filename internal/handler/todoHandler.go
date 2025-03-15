@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"todo-app/internal/service"
+	"todo-app/internal/view"
 )
 
 type TodoHandler struct {
@@ -15,15 +16,16 @@ func NewTodoHandler(service *service.TodoService) *TodoHandler {
 }
 
 func (h *TodoHandler) Test(c *gin.Context) {
-	fmt.Print("test")
-
-	return "Test"
+	c.String(http.StatusOK, "Test")
 }
 
-//func (h *TodoHandler) Index(c *gin.Context) {
-//	todos, _ := h.service.GetAllTodos(c.Request.Context())
-//	view.Layout("Todos", view.TodoList(todos)).Render(c.Request.Context(), c.Writer)
-//}
+func (h *TodoHandler) Index(c *gin.Context) {
+	//todos, _ := h.service.GetAllTodos(c.Request.Context())
+	//view.Layout("Todos", view.TodoList(todos)).Render(c.Request.Context(), c.Writer)
+	//c.HTML(http.StatusOK, "index", view.Index())
+	
+	view.Index().Render(c.Request.Context(), c.Writer)
+}
 
 //func (h *TodoHandler) CreateTodo(c *gin.Context) {
 //	userID := c.GetInt("userID")

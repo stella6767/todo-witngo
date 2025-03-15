@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	todoHandler, _ := config.InitApp()
+	todoHandler := config.InitAppDependency()
 
 	r := router.NewRouter(todoHandler)
 

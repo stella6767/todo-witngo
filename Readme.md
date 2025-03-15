@@ -1,11 +1,19 @@
 
-
 ## go path preSetup 
 
 ```azure
 ~/GolandProjects/todo-app main !1 ❯ sudo chown -R $(whoami):staff /Users/{username}/go      
 ~/GolandProjects/todo-app main !1 ❯ chmod -R 755 /Users/{username}/go
 ```
+
+
+# test stack
+
+[GIN]()
+[templ]()
+[postgres]()
+[]()
+
 
 ## templ cli
 

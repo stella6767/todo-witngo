@@ -6,7 +6,7 @@ import (
 	"todo-app/internal/service"
 )
 
-func InitApp() (*handler.TodoHandler, Person) {
+func InitAppDependency() *handler.TodoHandler {
 
 	db := loadDB()
 	// 레이어 초기화
@@ -14,12 +14,5 @@ func InitApp() (*handler.TodoHandler, Person) {
 	todoService := service.NewTodoService(todoRepo)
 	todoHandler := handler.NewTodoHandler(todoService)
 
-	person := Person{Name: "test"}
-
-	return todoHandler, person
-}
-
-type Person struct {
-	Name string
-	Age  int
+	return todoHandler
 }

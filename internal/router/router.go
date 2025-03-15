@@ -33,12 +33,10 @@ func NewRouter(todoHandler *handler.TodoHandler) *gin.Engine {
 
 func registerTodoHandler(handler *handler.TodoHandler, router *gin.Engine) {
 
-	//router.GET("/", )
-	//h.handler
+	router.GET("/", handler.Index)
 
 	json := router.Group("json")
 	json.GET("/todos", handler.Test)
-
 	//json.GET("/todos")
 }
 
