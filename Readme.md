@@ -12,7 +12,11 @@
 [GIN]()
 [templ]()
 [postgres]()
-[]()
+[air]()
+[viper]()
+[air]()
+[air]()
+[air]()
 
 
 ## templ cli
@@ -22,6 +26,15 @@
 ```azure
 export PATH="$PATH:/usr/local/go/bin/bin"
 ```
+
+
+### hot reloading
+
+```azure
+make run
+```
+
+[Go + HTMX + Templ + Tailwind: 프로젝트 설정 완료 및 핫 리로딩](https://medium.com/ostinato-rigore/go-htmx-templ-tailwind-complete-project-setup-hot-reloading-2ca1ba6c28be)
 
 ## sqlc
 

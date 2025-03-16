@@ -15,6 +15,7 @@ func NewTodoService(repo repository.TodoRepository) *TodoService {
 }
 
 func (s *TodoService) CreateTodo(ctx context.Context, task string) (*model.Todo, error) {
+
 	return s.repo.CreateTodo(ctx, task)
 }
 

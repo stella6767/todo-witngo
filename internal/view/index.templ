@@ -1,7 +1,38 @@
 package view
 
+import (
+	"todo-app/internal/view/component"
+)
+
+
 templ Index(){
     @layout() {
-        <h1>Hello Templ</h1>
+        <div class="h-screen bg-gray-600 flex flex-col justify-center items-center">
+
+            <div class="items-center h-2/3 w-1/2 bg-white">
+                <div class="flex items-center px-6 pt-4">
+                    <h1 class="text-5xl font-bold">Todo List</h1>
+                </div>
+                <div class="flex p-6 ">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker" id="new-todo"
+                           name="newTodo" placeholder="To do..." required="" type="text" autofocus="">
+
+                    <button class="flex-no-shrink p-2 border-2 rounded text-info-content border-teal hover:text-white hover:bg-teal"
+                            hx-include="#new-todo" hx-trigger="click" hx-post="/todo" hx-target="#todo-list"
+                            hx-swap="afterbegin" hx-on--after-request="document.getElementById('new-todo').value='';">
+                        Add
+                    </button>
+                </div>
+                <div id="todo-list">
+                    @view.TodoComponent()
+                </div>
+            </div>
+
+            <div class="mt-5"></div>
+
+            @view.Pagination()
+
+
+        </div>
     }
 }

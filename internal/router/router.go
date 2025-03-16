@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"todo-app/internal/handler"
+	"todo-app/internal/middleware"
 )
 
 func NewRouter(todoHandler *handler.TodoHandler) *gin.Engine {
@@ -16,6 +17,11 @@ func NewRouter(todoHandler *handler.TodoHandler) *gin.Engine {
 	router.Use(gin.Logger())
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
+
+	router.Use(middleware.CustomLogger())
+
+	router.Static("/assets", "./assets")
+	router.StaticFile("/assets", "./assets")
 
 	registerTodoHandler(todoHandler, router)
 

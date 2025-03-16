@@ -23,7 +23,9 @@ func (h *TodoHandler) Index(c *gin.Context) {
 	//todos, _ := h.service.GetAllTodos(c.Request.Context())
 	//view.Layout("Todos", view.TodoList(todos)).Render(c.Request.Context(), c.Writer)
 	//c.HTML(http.StatusOK, "index", view.Index())
-	
+
+	//component.TodoComponent()
+
 	view.Index().Render(c.Request.Context(), c.Writer)
 }
 

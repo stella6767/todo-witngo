@@ -8,6 +8,10 @@ package view
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import (
+	"todo-app/internal/view/component"
+)
+
 func Index() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -41,7 +45,23 @@ func Index() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<h1>Hello Templ</h1>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"h-screen bg-gray-600 flex flex-col justify-center items-center\"><div class=\"items-center h-2/3 w-1/2 bg-white\"><div class=\"flex items-center px-6 pt-4\"><h1 class=\"text-5xl font-bold\">Todo List</h1></div><div class=\"flex p-6 \"><input class=\"shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker\" id=\"new-todo\" name=\"newTodo\" placeholder=\"To do...\" required=\"\" type=\"text\" autofocus=\"\"> <button class=\"flex-no-shrink p-2 border-2 rounded text-info-content border-teal hover:text-white hover:bg-teal\" hx-include=\"#new-todo\" hx-trigger=\"click\" hx-post=\"/todo\" hx-target=\"#todo-list\" hx-swap=\"afterbegin\" hx-on--after-request=\"document.getElementById(&#39;new-todo&#39;).value=&#39;&#39;;\">Add</button></div><div id=\"todo-list\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = view.TodoComponent().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div><div class=\"mt-5\"></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = view.Pagination().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
