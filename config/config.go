@@ -2,14 +2,13 @@ package config
 
 import (
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/spf13/viper"
 	"log"
 )
 
 //struct tags
 
-var globalConfig Config
+var GlobalConfig Config
 
 type Config struct {
 	Datasource Datasource `yaml:"datasource"`
@@ -27,25 +26,20 @@ type Datasource struct {
 	Password string `yaml:"password"`
 }
 
-func LoadConfig() (config Config, err error) {
+func LoadConfig() {
 	//Named Return Parameters
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	//viper.AutomaticEnv()
-	err = viper.ReadInConfig()
-
+	err := viper.ReadInConfig()
 	fmt.Println("read config")
-
 	if err != nil {
 		panic(fmt.Errorf("fatal error config file: %w", err))
 	}
-
-	err = viper.Unmarshal(&globalConfig)
+	err = viper.Unmarshal(&GlobalConfig)
 	if err != nil {
 		log.Fatalf("unable to decode into struct, %v", err)
+		panic(err)
 	}
-	log.Printf("Config: %+v", spew.Sdump(config))
-
-	return
 }

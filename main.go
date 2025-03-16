@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"todo-app/config"
 	"todo-app/internal/router"
 )
@@ -14,10 +15,12 @@ func init() {
 func main() {
 
 	todoHandler := config.InitAppDependency()
-	
-	r := router.NewRouter(todoHandler)
-	err := r.Run(":8080")
 
+	r := router.NewRouter(todoHandler)
+
+	port := strconv.Itoa(config.GlobalConfig.Server.Port)
+	err := r.Run(":" + port)
+	
 	if err != nil {
 		return
 	}

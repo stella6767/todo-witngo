@@ -1,9 +1,13 @@
 package test
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"testing"
 	"todo-app/config"
+	"todo-app/internal/dto"
+	"todo-app/internal/repository"
 )
 
 /** 작성규칙
@@ -25,11 +29,29 @@ func TestInitApp(t *testing.T) { // 테스트
 
 func TestViper(t *testing.T) {
 
-	loadConfig, err := config.LoadConfig()
-	if err != nil {
-		fmt.Errorf("Fatal error config file: %s \n", err)
-	}
+	config.LoadConfig()
 
-	fmt.Print(loadConfig)
+}
+
+func TestRepository(t *testing.T) {
+
+	db, err := sql.Open("postgres", "postgresql://localhost:5432/postgres?sslmode=disable")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	todoRepository := repository.NewTodoRepository(db)
+
+	pageable := dto.Pageable{Page: 0, Size: 10}
+	ctx := context.Background() // 기본 컨텍스트 생성
+	todos := todoRepository.GetTodosByPage(ctx, pageable)
+
+	fmt.Println("???")
+	fmt.Println(todos.Total)
+
+	for i := 0; i < len(todos.Content); i++ {
+		fmt.Println(todos.Content[i].Title)
+	}
 
 }

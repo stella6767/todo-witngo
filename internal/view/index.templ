@@ -2,10 +2,11 @@ package view
 
 import (
 	"todo-app/internal/view/component"
+	"todo-app/.gen/postgres/public/model"
 )
 
 
-templ Index(){
+templ Index(todo []model.Todo){
     @layout() {
         <div class="h-screen bg-gray-600 flex flex-col justify-center items-center">
 

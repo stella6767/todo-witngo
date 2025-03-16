@@ -8,10 +8,10 @@ import (
 
 func loadDB() *sql.DB {
 
-	fmt.Println(globalConfig.Datasource.DbType)
+	fmt.Println(GlobalConfig.Datasource.DbType)
 
 	//dsn := "postgresql://localhost:5432/postgres?sslmode=disable"
-	db, err := sql.Open(globalConfig.Datasource.DbType, globalConfig.Datasource.Url)
+	db, err := sql.Open(GlobalConfig.Datasource.DbType, GlobalConfig.Datasource.Url)
 	if err != nil {
 		panic(err)
 	}
