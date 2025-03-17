@@ -3,10 +3,12 @@ package view
 import (
 	"todo-app/internal/view/component"
 	"todo-app/.gen/postgres/public/model"
+		"todo-app/internal/dto"
+
 )
 
 
-templ Index(todo []model.Todo){
+templ Index(todos dto.PageResult[model.Todo]){
     @layout() {
         <div class="h-screen bg-gray-600 flex flex-col justify-center items-center">
 
@@ -25,7 +27,9 @@ templ Index(todo []model.Todo){
                     </button>
                 </div>
                 <div id="todo-list">
-                    @view.TodoComponent()
+                      for _, todo := range todos.Content {
+                        @view.TodoComponent(todo)
+                      }
                 </div>
             </div>
 

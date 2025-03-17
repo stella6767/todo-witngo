@@ -35,7 +35,7 @@ func LoadConfig() {
 	err := viper.ReadInConfig()
 	fmt.Println("read config")
 	if err != nil {
-		panic(fmt.Errorf("fatal error config file: %w", err))
+		panic(fmt.Errorf("fatal errUtils config file: %w", err))
 	}
 	err = viper.Unmarshal(&GlobalConfig)
 	if err != nil {

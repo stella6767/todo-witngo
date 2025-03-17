@@ -19,10 +19,9 @@ func NewRouter(todoHandler *handler.TodoHandler) *gin.Engine {
 	router.Use(gin.Recovery())
 
 	router.Use(middleware.CustomLogger())
-
+	router.Use(middleware.ErrorHandler)
+	
 	router.Static("/assets", "./assets")
-	router.StaticFile("/assets", "./assets")
-
 	registerTodoHandler(todoHandler, router)
 
 	router.GET("/json", func(c *gin.Context) {
@@ -40,33 +39,7 @@ func NewRouter(todoHandler *handler.TodoHandler) *gin.Engine {
 func registerTodoHandler(handler *handler.TodoHandler, router *gin.Engine) {
 
 	router.GET("/", handler.Index)
-
 	json := router.Group("json")
-	json.GET("/todos", handler.Test)
+	json.GET("/test", handler.Test)
 	//json.GET("/todos")
 }
-
-//func Router(
-//	todoRepo repository.TodoRepository,
-//	cfg config.Config,
-//) {
-//	// Gin 설정
-//	router := gin.Default()
-//	// 템플릿 등록
-//	router.GET("/", func(c *gin.Context) {
-//		//todos, _ := todoRepo.GetTodos(c.Request.Context(), 1) // 임시 유저ID
-//		c.HTML(http.StatusOK, "", view.Test())
-//	})
-//
-//	// API 라우트
-//	api := router.Group(`/v1`)
-//	{
-//		todoHandler := handler.NewTodoHandler(todoRepo)
-//		api.POST("/todos", todoHandler.CreateTodo)
-//	}
-//
-//	// HTMX 에셋 제공
-//	router.Static("/static", "./static")
-//
-//	log.Fatal(router.Run(":" + cfg.Port))
-//}

@@ -4,10 +4,12 @@ import (
 	"context"
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/go-jet/jet/v2/qrm"
+	"github.com/pkg/errors"
 	"log"
 	"todo-app/.gen/postgres/public/model"
 	"todo-app/.gen/postgres/public/table"
 	"todo-app/internal/dto"
+	errUtil "todo-app/internal/errUtils"
 )
 
 // 공개되는 인터페이스
@@ -15,7 +17,7 @@ type TodoRepository interface {
 	CreateTodo(ctx context.Context, title string) (*model.Todo, error)
 	GetTodos(ctx context.Context) ([]model.Todo, error)
 	GetTodosByPage(ctx context.Context, pageable dto.Pageable) dto.PageResult[model.Todo]
-	UpdateTodoStatus(ctx context.Context, id int32, completed bool) error
+	UpdateTodoStatus(ctx context.Context, id int32, completed bool) (model.Todo, error)
 }
 
 type todoRepository struct {
@@ -69,17 +71,28 @@ func (r *todoRepository) GetTodosByPage(ctx context.Context, pageable dto.Pageab
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	
+
 	return dto.PageResult[model.Todo]{Content: todos, Size: pageable.Size, Total: int(count.Count)}
 }
 
-func (r *todoRepository) UpdateTodoStatus(ctx context.Context, id int32, isComplete bool) error {
-	_, err := table.Todo.UPDATE(table.Todo.Completed).
+func (r *todoRepository) UpdateTodoStatus(ctx context.Context, id int32, isComplete bool) (model.Todo, error) {
+
+	stmt := table.Todo.UPDATE(table.Todo.Completed).
 		SET(isComplete).
 		WHERE(table.Todo.ID.EQ(postgres.Int32(id))).
-		Exec(r.db)
+		RETURNING(table.Todo.AllColumns) // 모든 컬럼 반환
+
+	var todo model.Todo
+	err := stmt.QueryContext(ctx, r.db, &todo)
+
 	if err != nil {
-		return err
+		return todo, errUtil.Wrap(err)
 	}
-	return nil
+
+	// 업데이트된 행이 없는 경우
+	if todo.ID == 0 {
+		return todo, errUtil.Wrap(errors.New("todo id not found"))
+	}
+
+	return todo, nil
 }

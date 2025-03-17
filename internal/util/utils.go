@@ -1,6 +1,8 @@
 package util
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func isHTMX(r *http.Request) bool {
 	// Check for "HX-Request" header

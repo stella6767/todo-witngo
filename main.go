@@ -14,14 +14,16 @@ func init() {
 
 func main() {
 
-	todoHandler := config.InitAppDependency()
-
+	db := config.LoadDB()
+	todoHandler := config.InitAppDependency(db)
 	r := router.NewRouter(todoHandler)
-
 	port := strconv.Itoa(config.GlobalConfig.Server.Port)
 	err := r.Run(":" + port)
-	
+
 	if err != nil {
 		return
 	}
+
+	// main function 에 둬야됨
+	defer db.Close()
 }

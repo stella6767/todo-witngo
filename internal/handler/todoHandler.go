@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
+	"strconv"
 	"todo-app/internal/dto"
 	"todo-app/internal/service"
+	"todo-app/internal/view"
 )
 
 type TodoHandler struct {
@@ -28,14 +30,27 @@ func (h *TodoHandler) Index(c *gin.Context) {
 	}
 	// 쿼리 파라미터 바인딩
 	if err := c.ShouldBindQuery(&pageable); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"errUtils": err.Error()})
 		return
 	}
 
 	todos := h.service.GetTodosByPage(c, pageable)
-	log.Println(todos)
-	//view.Index(todos).Render(c.Request.Context(), c.Writer)
+	view.Index(todos).Render(c.Request.Context(), c.Writer)
+}
 
+func (h *TodoHandler) UpdateTodoStatus(c *gin.Context) {
+
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"errUtils": "Invalid ID format"})
+		return
+	}
+
+	fmt.Println(id)
+
+	//h.service.UpdateTodoStatus(c, int32(id), true)
 }
 
 //func (h *TodoHandler) CreateTodo(c *gin.Context) {
@@ -46,14 +61,14 @@ func (h *TodoHandler) Index(c *gin.Context) {
 //
 //	//c.post
 //
-//	if err := c.ShouldBind(&req); err != nil {
-//		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+//	if errUtils := c.ShouldBind(&req); errUtils != nil {
+//		c.JSON(http.StatusBadRequest, gin.H{"errUtils": errUtils.Error()})
 //		return
 //	}
 //
-//	todo, err := h.service.Create(c.Request.Context(), int32(userID), req.Title)
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create todo"})
+//	todo, errUtils := h.service.Create(c.Request.Context(), int32(userID), req.Title)
+//	if errUtils != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"errUtils": "failed to create todo"})
 //		return
 //	}
 //

@@ -4,9 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/pkg/errors"
 	"testing"
+	"todo-app/.gen/postgres/public/model"
 	"todo-app/config"
 	"todo-app/internal/dto"
+	"todo-app/internal/errUtils"
 	"todo-app/internal/repository"
 )
 
@@ -23,7 +26,7 @@ import (
 
 func TestInitApp(t *testing.T) { // 테스트
 
-	result := config.InitAppDependency()
+	result := config.InitAppDependency(nil)
 	fmt.Print(result)
 }
 
@@ -47,11 +50,79 @@ func TestRepository(t *testing.T) {
 	ctx := context.Background() // 기본 컨텍스트 생성
 	todos := todoRepository.GetTodosByPage(ctx, pageable)
 
-	fmt.Println("???")
 	fmt.Println(todos.Total)
 
 	for i := 0; i < len(todos.Content); i++ {
-		fmt.Println(todos.Content[i].Title)
+		todo := todos.Content[i]
+		//todo.ID
+
+		if *todo.Completed == true {
+
+		}
+
+		fmt.Println(todo.Title)
 	}
 
+}
+
+func TestUpdateTodoStatus(t *testing.T) {
+	ctx := context.Background() // 기본 컨텍스트 생성
+	db, err := sql.Open("postgres", "postgresql://localhost:5432/postgres?sslmode=disable")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	todoRepository := repository.NewTodoRepository(db)
+
+	_, err = errorWrapTest(err, todoRepository, ctx)
+
+	if err != nil {
+		fmt.Errorf("%+v\n", err)
+	}
+
+}
+
+func errorWrapTest(err error, todoRepository repository.TodoRepository, ctx context.Context) (model.Todo, error) {
+	result, err := todoRepository.UpdateTodoStatus(ctx, 0, true)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+func TestError(t *testing.T) {
+	err := c()
+	if err != nil {
+
+		fmt.Printf("%+v\n", err)
+	}
+}
+
+func a() error {
+	return errors.New("first errUtils")
+}
+func b() error {
+	return errors.Wrap(a(), "second errUtils")
+}
+func c() error {
+	return errors.Wrap(b(), "third errUtils")
+}
+
+func TestErrorUtil(t *testing.T) {
+	if err := foo(); err != nil {
+		err = errUtil.Wrap(err) // 추가 message가 필요 없을 때
+		fmt.Printf("%+v\n", err)
+	}
+}
+
+func foo() error {
+	if err := bar(); err != nil { // 하위 함수에서 errUtils 발생
+		return errUtil.WrapWithMessage(err, "foo message") // 추가 message가 필요할 때
+	}
+	return nil
+}
+
+func bar() error {
+	return errors.New("bar Error!")
 }

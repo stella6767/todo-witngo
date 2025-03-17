@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"time"
@@ -8,13 +9,10 @@ import (
 
 func CustomLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fmt.Println("Custom Logger")
 		t := time.Now()
-		// Set example variable
-		c.Set("example", "12345")
-
 		// before request
 		c.Next()
-
 		// after request
 		latency := time.Since(t)
 		log.Print(latency)
