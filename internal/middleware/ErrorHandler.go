@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"todo-app/internal/errUtils"
 )
@@ -16,7 +16,7 @@ func ErrorHandler(ctx *gin.Context) {
 		castedError, ok := errUtil.CastApplicationError(err)
 		statusCode := http.StatusInternalServerError // default 500 internal server errUtils
 		if !ok {
-			fmt.Errorf(err.Error())
+			log.Errorf(err.Error())
 			response := errUtil.MakeBaseResponse(statusCode)
 			if !isBodyWritten {
 				ctx.JSON(statusCode, response)
@@ -25,15 +25,6 @@ func ErrorHandler(ctx *gin.Context) {
 		}
 		code := castedError.Code
 		response := errUtil.MakeBaseResponse(code)
-
-		// errUtils stack logging
-		//switch {
-		//// 40000 ~ 49999
-		//case errUtil.ERROR_INVALID_PARAMS <= castedError.Code && errUtil.ERROR_INTERNAL_SERVER > castedError.Code:
-		//	log.Warn(err.Error())
-		//default:
-		//	log.Error(err.Error())
-		//}
 
 		if !isBodyWritten {
 			ctx.JSON(statusCode, response)

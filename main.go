@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"github.com/sirupsen/logrus"
 	"strconv"
 	"todo-app/config"
 	"todo-app/internal/router"
@@ -25,5 +27,11 @@ func main() {
 	}
 
 	// main function 에 둬야됨
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			logrus.WithError(err).Error("db close error")
+		}
+	}(db)
+
 }

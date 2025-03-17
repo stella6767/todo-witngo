@@ -29,6 +29,6 @@ func (s *TodoService) GetTodosByPage(ctx context.Context, pageable dto.Pageable)
 	return s.repo.GetTodosByPage(ctx, pageable)
 }
 
-//func (s *TodoService) UpdateTodoStatus(ctx context.Context, id int32, completed bool) errUtils {
-//	return s.repo.UpdateTodoStatus(ctx, id, completed)
-//}
+func (s *TodoService) UpdateTodoStatus(ctx context.Context, id int32) (model.Todo, error) {
+	return s.repo.UpdateTodoStatus(ctx, id)
+}

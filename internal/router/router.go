@@ -20,7 +20,7 @@ func NewRouter(todoHandler *handler.TodoHandler) *gin.Engine {
 
 	router.Use(middleware.CustomLogger())
 	router.Use(middleware.ErrorHandler)
-	
+
 	router.Static("/assets", "./assets")
 	registerTodoHandler(todoHandler, router)
 
@@ -41,5 +41,7 @@ func registerTodoHandler(handler *handler.TodoHandler, router *gin.Engine) {
 	router.GET("/", handler.Index)
 	json := router.Group("json")
 	json.GET("/test", handler.Test)
-	//json.GET("/todos")
+
+	router.PUT("/todo/:id", handler.UpdateTodoStatus)
+
 }

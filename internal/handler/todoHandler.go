@@ -1,13 +1,14 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"todo-app/internal/dto"
+	errUtil "todo-app/internal/errUtils"
 	"todo-app/internal/service"
-	"todo-app/internal/view"
+	"todo-app/internal/view/component"
+	"todo-app/internal/view/page"
 )
 
 type TodoHandler struct {
@@ -35,7 +36,7 @@ func (h *TodoHandler) Index(c *gin.Context) {
 	}
 
 	todos := h.service.GetTodosByPage(c, pageable)
-	view.Index(todos).Render(c.Request.Context(), c.Writer)
+	page.Index(todos).Render(c.Request.Context(), c.Writer)
 }
 
 func (h *TodoHandler) UpdateTodoStatus(c *gin.Context) {
@@ -44,13 +45,13 @@ func (h *TodoHandler) UpdateTodoStatus(c *gin.Context) {
 	id, err := strconv.Atoi(idParam)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errUtils": "Invalid ID format"})
+		c.Error(errUtil.Wrap(err))
 		return
 	}
 
-	fmt.Println(id)
+	todo, err := h.service.UpdateTodoStatus(c, int32(id))
 
-	//h.service.UpdateTodoStatus(c, int32(id), true)
+	component.TodoComponent(todo).Render(c.Request.Context(), c.Writer)
 }
 
 //func (h *TodoHandler) CreateTodo(c *gin.Context) {

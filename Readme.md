@@ -128,8 +128,7 @@ godotenv?
 
 
 ## Error stack trace
-go는 기본적으로 stack trace 정보를 제공해주지 않는다. 처음 봤을 시 조금 충격적이었는데, 외부 라이브러리 
-도움을 받아 어케 한 번 구현해보기로 했다. 
+go는 기본적으로 stack trace 정보를 제공해주지 않는다. 처음 봤을 시 조금 충격적이었는데, 아래 글 보고 어케 한 번 구현해보기로 했다. 
 
-
+[Golang, 그대들은 어떻게 할 것인가 - 4. error 핸들링](https://d2.naver.com/helloworld/6507662)
 

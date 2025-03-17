@@ -5,7 +5,6 @@ import (
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/go-jet/jet/v2/qrm"
 	"github.com/pkg/errors"
-	"log"
 	"todo-app/.gen/postgres/public/model"
 	"todo-app/.gen/postgres/public/table"
 	"todo-app/internal/dto"
@@ -17,7 +16,7 @@ type TodoRepository interface {
 	CreateTodo(ctx context.Context, title string) (*model.Todo, error)
 	GetTodos(ctx context.Context) ([]model.Todo, error)
 	GetTodosByPage(ctx context.Context, pageable dto.Pageable) dto.PageResult[model.Todo]
-	UpdateTodoStatus(ctx context.Context, id int32, completed bool) (model.Todo, error)
+	UpdateTodoStatus(ctx context.Context, id int32) (model.Todo, error)
 }
 
 type todoRepository struct {
@@ -36,14 +35,14 @@ func (r *todoRepository) CreateTodo(ctx context.Context, title string) (*model.T
 		RETURNING(table.Todo.AllColumns)
 	var todo model.Todo
 	err := stmt.QueryContext(ctx, r.db, &todo)
-	return &todo, err
+	return &todo, errUtil.Wrap(err)
 }
 
 func (r *todoRepository) GetTodos(ctx context.Context) ([]model.Todo, error) {
 	stmt := table.Todo.SELECT(table.Todo.AllColumns)
 	var todos []model.Todo
 	err := stmt.QueryContext(ctx, r.db, &todos)
-	return todos, err
+	return todos, errUtil.Wrap(err)
 }
 
 func (r *todoRepository) GetTodosByPage(ctx context.Context, pageable dto.Pageable) dto.PageResult[model.Todo] {
@@ -63,22 +62,25 @@ func (r *todoRepository) GetTodosByPage(ctx context.Context, pageable dto.Pageab
 	err2 := countStmt.Query(r.db, &count)
 
 	if err2 != nil {
-		log.Fatal(err2.Error())
+		errUtil.Wrap(err2)
 	}
+
 	var todos []model.Todo
 	err := stmt.QueryContext(ctx, r.db, &todos)
 
 	if err != nil {
-		log.Fatal(err.Error())
+		errUtil.Wrap(err)
 	}
 
-	return dto.PageResult[model.Todo]{Content: todos, Size: pageable.Size, Total: int(count.Count)}
+	result := dto.PageResult[model.Todo]{Content: todos, Size: pageable.Size, Total: int(count.Count)}
+
+	return result
 }
 
-func (r *todoRepository) UpdateTodoStatus(ctx context.Context, id int32, isComplete bool) (model.Todo, error) {
+func (r *todoRepository) UpdateTodoStatus(ctx context.Context, id int32) (model.Todo, error) {
 
 	stmt := table.Todo.UPDATE(table.Todo.Completed).
-		SET(isComplete).
+		SET(postgres.Raw("NOT completed")).
 		WHERE(table.Todo.ID.EQ(postgres.Int32(id))).
 		RETURNING(table.Todo.AllColumns) // 모든 컬럼 반환
 
@@ -88,11 +90,9 @@ func (r *todoRepository) UpdateTodoStatus(ctx context.Context, id int32, isCompl
 	if err != nil {
 		return todo, errUtil.Wrap(err)
 	}
-
 	// 업데이트된 행이 없는 경우
 	if todo.ID == 0 {
 		return todo, errUtil.Wrap(errors.New("todo id not found"))
 	}
-
 	return todo, nil
 }

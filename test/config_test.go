@@ -5,12 +5,14 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 	"testing"
 	"todo-app/.gen/postgres/public/model"
 	"todo-app/config"
 	"todo-app/internal/dto"
 	"todo-app/internal/errUtils"
 	"todo-app/internal/repository"
+	"todo-app/internal/util"
 )
 
 /** 작성규칙
@@ -73,20 +75,28 @@ func TestUpdateTodoStatus(t *testing.T) {
 	}
 	defer db.Close()
 
+	log.SetFormatter(&util.PrettyFormatter{
+		TextFormatter: log.TextFormatter{
+			ForceColors:  true,
+			PadLevelText: true,
+		},
+	})
+
 	todoRepository := repository.NewTodoRepository(db)
 
 	_, err = errorWrapTest(err, todoRepository, ctx)
 
 	if err != nil {
-		fmt.Errorf("%+v\n", err)
+		fmt.Printf("%+v\n", err)
+		log.WithError(err).Error("", err)
 	}
 
 }
 
 func errorWrapTest(err error, todoRepository repository.TodoRepository, ctx context.Context) (model.Todo, error) {
-	result, err := todoRepository.UpdateTodoStatus(ctx, 0, true)
+	result, err := todoRepository.UpdateTodoStatus(ctx, 1)
 	if err != nil {
-		return result, err
+		return result, errUtil.Wrap(err)
 	}
 	return result, nil
 }
@@ -110,9 +120,24 @@ func c() error {
 }
 
 func TestErrorUtil(t *testing.T) {
+
+	log.SetFormatter(&util.PrettyFormatter{
+		TextFormatter: log.TextFormatter{
+			ForceColors:  true,
+			PadLevelText: true,
+		},
+	})
+
 	if err := foo(); err != nil {
 		err = errUtil.Wrap(err) // 추가 message가 필요 없을 때
-		fmt.Printf("%+v\n", err)
+		//fmt.Printf("%+v\n", err)
+		//log.Errorf("%+v", err)
+		//log.Errorf("%+v\n", err)
+		
+		log.Error(err)
+
+		//log.WithError(err).Warn("db close error")
+
 	}
 }
 
