@@ -27,15 +27,40 @@ func (h *TodoHandler) Index(c *gin.Context) {
 
 	pageable := dto.Pageable{
 		Page: 0,
-		Size: 10,
+		Size: 6,
 	}
 	// 쿼리 파라미터 바인딩
 	if err := c.ShouldBindQuery(&pageable); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"errUtils": err.Error()})
+		c.Error(errUtil.Wrap(err))
+		return
+	}
+	todos, err := h.service.GetTodosByPage(c, pageable)
+
+	if err != nil {
+		c.Error(errUtil.Wrap(err))
 		return
 	}
 
-	todos := h.service.GetTodosByPage(c, pageable)
+	page.Index(todos).Render(c.Request.Context(), c.Writer)
+}
+
+func (h *TodoHandler) GetTodosByPage(c *gin.Context) {
+
+	pageable := dto.Pageable{
+		Page: 0,
+		Size: 10,
+	}
+
+	// 쿼리 파라미터 바인딩
+	if err := c.ShouldBindQuery(&pageable); err != nil {
+		c.Error(errUtil.Wrap(err))
+		return
+	}
+	todos, err := h.service.GetTodosByPage(c, pageable)
+	if err != nil {
+		c.Error(errUtil.Wrap(err))
+		return
+	}
 	page.Index(todos).Render(c.Request.Context(), c.Writer)
 }
 
@@ -43,35 +68,30 @@ func (h *TodoHandler) UpdateTodoStatus(c *gin.Context) {
 
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
-
 	if err != nil {
 		c.Error(errUtil.Wrap(err))
 		return
 	}
-
 	todo, err := h.service.UpdateTodoStatus(c, int32(id))
+	if err != nil {
+		c.Error(errUtil.Wrap(err))
+	}
 
 	component.TodoComponent(todo).Render(c.Request.Context(), c.Writer)
 }
 
-//func (h *TodoHandler) CreateTodo(c *gin.Context) {
-//	userID := c.GetInt("userID")
-//	var req struct {
-//		Title string `json:"title" binding:"required"`
-//	}
-//
-//	//c.post
-//
-//	if errUtils := c.ShouldBind(&req); errUtils != nil {
-//		c.JSON(http.StatusBadRequest, gin.H{"errUtils": errUtils.Error()})
-//		return
-//	}
-//
-//	todo, errUtils := h.service.Create(c.Request.Context(), int32(userID), req.Title)
-//	if errUtils != nil {
-//		c.JSON(http.StatusInternalServerError, gin.H{"errUtils": "failed to create todo"})
-//		return
-//	}
-//
-//	c.Render(http.StatusOK, view.TodoList(todo))
-//}
+func (h *TodoHandler) CreateTodo(c *gin.Context) {
+
+	newTodo := c.PostForm("task")
+	if newTodo == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "newTodo is required"})
+		return
+	}
+
+	todo, err := h.service.CreateTodo(c, newTodo)
+	if err != nil {
+		c.Error(errUtil.Wrap(err))
+		return
+	}
+	component.TodoComponent(*todo).Render(c.Request.Context(), c.Writer)
+}

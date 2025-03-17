@@ -68,12 +68,36 @@ func TestRepository(t *testing.T) {
 }
 
 func TestUpdateTodoStatus(t *testing.T) {
+	ctx, err, todoRepository := createTestTodoRepository()
+
+	_, err = errorWrapTest(err, todoRepository, ctx)
+
+	if err != nil {
+		fmt.Printf("%+v\n", err)
+		log.WithError(err).Error("", err)
+	}
+
+}
+
+func TestCreateTodo(t *testing.T) {
+	ctx, _, todoRepository := createTestTodoRepository()
+
+	todo, err := todoRepository.CreateTodo(ctx, "task1")
+
+	if err != nil {
+		log.WithError(err).Error("", err)
+	}
+
+	fmt.Println(todo)
+}
+
+func createTestTodoRepository() (context.Context, error, repository.TodoRepository) {
 	ctx := context.Background() // 기본 컨텍스트 생성
 	db, err := sql.Open("postgres", "postgresql://localhost:5432/postgres?sslmode=disable")
+
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 
 	log.SetFormatter(&util.PrettyFormatter{
 		TextFormatter: log.TextFormatter{
@@ -83,14 +107,7 @@ func TestUpdateTodoStatus(t *testing.T) {
 	})
 
 	todoRepository := repository.NewTodoRepository(db)
-
-	_, err = errorWrapTest(err, todoRepository, ctx)
-
-	if err != nil {
-		fmt.Printf("%+v\n", err)
-		log.WithError(err).Error("", err)
-	}
-
+	return ctx, err, todoRepository
 }
 
 func errorWrapTest(err error, todoRepository repository.TodoRepository, ctx context.Context) (model.Todo, error) {
@@ -133,7 +150,7 @@ func TestErrorUtil(t *testing.T) {
 		//fmt.Printf("%+v\n", err)
 		//log.Errorf("%+v", err)
 		//log.Errorf("%+v\n", err)
-		
+
 		log.Error(err)
 
 		//log.WithError(err).Warn("db close error")

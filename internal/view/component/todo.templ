@@ -10,7 +10,7 @@ templ TodoComponent(todo model.Todo){
            <div class="flex mb-4 items-center px-6" id={ "todo-box-" + fmt.Sprint(todo.ID) }>
                         <p class="w-full text-info-content truncate">{todo.Title} </p>
                         <button class="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded hover:text-white text-info-content border-green hover:bg-green"
-                                hx-trigger="click" hx-put="/todo/1" hx-target={ "#todo-box-" + fmt.Sprint(todo.ID) } hx-swap="innerHTML">
+                                hx-trigger="click" hx-put={"/todo/" +  fmt.Sprint(todo.ID) } hx-target={ "#todo-box-" + fmt.Sprint(todo.ID) } hx-swap="outerHTML">
                                       if *todo.Completed {
                                         Done
                                       } else {

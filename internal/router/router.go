@@ -39,9 +39,11 @@ func NewRouter(todoHandler *handler.TodoHandler) *gin.Engine {
 func registerTodoHandler(handler *handler.TodoHandler, router *gin.Engine) {
 
 	router.GET("/", handler.Index)
+	router.GET("/todos", handler.GetTodosByPage)
+	router.PUT("/todo/:id", handler.UpdateTodoStatus)
+	router.POST("/todo", handler.CreateTodo)
+
 	json := router.Group("json")
 	json.GET("/test", handler.Test)
-
-	router.PUT("/todo/:id", handler.UpdateTodoStatus)
 
 }

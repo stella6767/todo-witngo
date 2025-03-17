@@ -1,4 +1,4 @@
-package view
+package page
 
 import (
 	"todo-app/.gen/postgres/public/model"
@@ -9,15 +9,14 @@ import (
 
 templ Index(todos dto.PageResult[model.Todo]){
     @layout() {
-        <div class="h-screen bg-gray-600 flex flex-col justify-center items-center">
-
-            <div class="items-center h-2/3 w-1/2 bg-white">
+        <div class="min-h-screen bg-gray-600 flex flex-col justify-center items-center py-8">
+            <div class="w-1/2 mx-auto bg-white flex flex-col ">
                 <div class="flex items-center px-6 pt-4">
                     <h1 class="text-5xl font-bold">Todo List</h1>
                 </div>
                 <div class="flex p-6 ">
                     <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker" id="new-todo"
-                           name="newTodo" placeholder="To do..." required="" type="text" autofocus="">
+                           name="task" placeholder="To do..." required="" type="text" autofocus="">
 
                     <button class="flex-no-shrink p-2 border-2 rounded text-info-content border-teal hover:text-white hover:bg-teal"
                             hx-include="#new-todo" hx-trigger="click" hx-post="/todo" hx-target="#todo-list"
@@ -25,16 +24,16 @@ templ Index(todos dto.PageResult[model.Todo]){
                         Add
                     </button>
                 </div>
-                <div id="todo-list">
+                <div id="todo-list" class="flex flex-col overflow-y-auto">
                       for _, todo := range todos.Content {
-                        @view.TodoComponent(todo)
+                        @component.TodoComponent(todo)
                       }
                 </div>
             </div>
 
             <div class="mt-5"></div>
 
-            @view.Pagination()
+            @component.Pagination(todos, "todos", "todo-list" )
 
 
         </div>

@@ -24,7 +24,7 @@ func (s *TodoService) GetTodos(ctx context.Context) ([]model.Todo, error) {
 	return s.repo.GetTodos(ctx)
 }
 
-func (s *TodoService) GetTodosByPage(ctx context.Context, pageable dto.Pageable) dto.PageResult[model.Todo] {
+func (s *TodoService) GetTodosByPage(ctx context.Context, pageable dto.Pageable) (dto.PageResult[model.Todo], error) {
 
 	return s.repo.GetTodosByPage(ctx, pageable)
 }
