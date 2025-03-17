@@ -18,7 +18,7 @@ templ TodoComponent(todo model.Todo){
                                       }
                         </button>
                         <button class="flex-no-shrink p-2 ml-2 border-2 rounded text-info-content border-red hover:text-white hover:bg-red"
-                                hx-confirm="Are you sure?" hx-swap="outerHTML swap:1s" hx-trigger="click" hx-delete="/todo/1"
+                                hx-confirm="Are you sure?" hx-swap="outerHTML swap:1s" hx-trigger="click" hx-delete={"/todo/" + fmt.Sprint(todo.ID)}
                                 hx-target="closest div">
                             Remove
                         </button>

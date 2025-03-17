@@ -27,7 +27,7 @@ func (h *TodoHandler) Index(c *gin.Context) {
 
 	pageable := dto.Pageable{
 		Page: 0,
-		Size: 6,
+		Size: 7,
 	}
 	// 쿼리 파라미터 바인딩
 	if err := c.ShouldBindQuery(&pageable); err != nil {
@@ -48,7 +48,7 @@ func (h *TodoHandler) GetTodosByPage(c *gin.Context) {
 
 	pageable := dto.Pageable{
 		Page: 0,
-		Size: 10,
+		Size: 7,
 	}
 
 	// 쿼리 파라미터 바인딩
@@ -61,7 +61,8 @@ func (h *TodoHandler) GetTodosByPage(c *gin.Context) {
 		c.Error(errUtil.Wrap(err))
 		return
 	}
-	page.Index(todos).Render(c.Request.Context(), c.Writer)
+
+	component.TodoContainer(todos).Render(c.Request.Context(), c.Writer)
 }
 
 func (h *TodoHandler) UpdateTodoStatus(c *gin.Context) {
@@ -94,4 +95,17 @@ func (h *TodoHandler) CreateTodo(c *gin.Context) {
 		return
 	}
 	component.TodoComponent(*todo).Render(c.Request.Context(), c.Writer)
+}
+
+func (h *TodoHandler) DeleteTodoById(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.Error(errUtil.Wrap(err))
+		return
+	}
+	err = h.service.DeleteTodoById(c, id)
+	if err != nil {
+		c.Error(errUtil.Wrap(err))
+	}
 }

@@ -16,6 +16,7 @@ import (
 type TodoRepository interface {
 	CreateTodo(ctx context.Context, title string) (*model.Todo, error)
 	GetTodos(ctx context.Context) ([]model.Todo, error)
+	DeleteTodoById(ctx context.Context, id int) error
 	GetTodosByPage(ctx context.Context, pageable dto.Pageable) (dto.PageResult[model.Todo], error)
 	UpdateTodoStatus(ctx context.Context, id int32) (model.Todo, error)
 }
@@ -28,6 +29,14 @@ type todoRepository struct {
 // 생성자 함수
 func NewTodoRepository(q qrm.DB) TodoRepository {
 	return &todoRepository{db: q}
+}
+
+func (r *todoRepository) DeleteTodoById(ctx context.Context, id int) error {
+	_, err := table.Todo.DELETE().WHERE(table.Todo.ID.EQ(postgres.Int(int64(id)))).Exec(r.db)
+	if err != nil {
+		return errUtil.Wrap(err)
+	}
+	return nil
 }
 
 func (r *todoRepository) CreateTodo(ctx context.Context, title string) (*model.Todo, error) {

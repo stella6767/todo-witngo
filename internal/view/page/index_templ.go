@@ -12,6 +12,7 @@ import (
 	"todo-app/.gen/postgres/public/model"
 	"todo-app/internal/dto"
 	"todo-app/internal/view/component"
+	"todo-app/internal/view/layout"
 )
 
 func Index(todos dto.PageResult[model.Todo]) templ.Component {
@@ -47,31 +48,13 @@ func Index(todos dto.PageResult[model.Todo]) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"min-h-screen bg-gray-600 flex flex-col justify-center items-center py-8\"><div class=\"w-1/2 mx-auto bg-white flex flex-col \"><div class=\"flex items-center px-6 pt-4\"><h1 class=\"text-5xl font-bold\">Todo List</h1></div><div class=\"flex p-6 \"><input class=\"shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker\" id=\"new-todo\" name=\"task\" placeholder=\"To do...\" required=\"\" type=\"text\" autofocus=\"\"> <button class=\"flex-no-shrink p-2 border-2 rounded text-info-content border-teal hover:text-white hover:bg-teal\" hx-include=\"#new-todo\" hx-trigger=\"click\" hx-post=\"/todo\" hx-target=\"#todo-list\" hx-swap=\"afterbegin\" hx-on--after-request=\"document.getElementById(&#39;new-todo&#39;).value=&#39;&#39;;\">Add</button></div><div id=\"todo-list\" class=\"flex flex-col overflow-y-auto\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			for _, todo := range todos.Content {
-				templ_7745c5c3_Err = component.TodoComponent(todo).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div><div class=\"mt-5\"></div>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = component.Pagination(todos, "todos", "todo-list").Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div>")
+			templ_7745c5c3_Err = component.TodoContainer(todos).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layout().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Layout().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
