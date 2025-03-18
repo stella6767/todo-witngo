@@ -1,34 +1,31 @@
 
-## go path preSetup 
+# go path preSetup
 
 ```azure
 ~/GolandProjects/todo-app main !1 ❯ sudo chown -R $(whoami):staff /Users/{username}/go      
 ~/GolandProjects/todo-app main !1 ❯ chmod -R 755 /Users/{username}/go
 ```
 
-
 # test stack
 
-[GIN]()
-[templ]()
-[postgres]()
-[air]()
-[viper]()
-[jet]()
-[air]()
-[air]()
+* GIN
+* templ
+* postgres
+* air
+* viper
+* go-jet
+* htmx
+* tailwind
 
+
+# UI Rendering
 
 ## templ
 
-최대한 html과 가까운 서버사이드 템플릿 엔진을 찾아보는데 templ 이 가장 가까운 것 같다. 좀 아쉬운 부분이 많다. lsp
-plugin을 깔아서 쓰는데, 자동완성 및, auto import, 오류 구문 표시 같은 게 거의 없는 수준이고, 문법 오류 표시가 없어서 generate 
-하고 메시지를 보고 다시 찾아가서 고치는 경우가 많다. 찾아봐도 대안이 없는데.. Go 진영에서는 이게 최선인가?  
+최대한 html과 가까운 서버사이드 템플릿 엔진을 찾아보는데 templ 이 가장 가까운 것 같다. 좀 아쉬운 부분이 많다. lsp plugin을 깔아서 쓰는데, 자동완성 및, auto import, 오류 구문 표시 같은 게 거의 없는 수준이고, 
+문법 오류 표시가 없어서 generate 하고 메시지를 보고 다시 찾아가서 고치는 경우가 많다. 찾아봐도 대안이 없는데.. Go 진영에서는 이게 최선인가?  
 
-
-
-
-## templ cli
+### templ cli
 
 ![img.png](img.png)
 
@@ -36,14 +33,12 @@ plugin을 깔아서 쓰는데, 자동완성 및, auto import, 오류 구문 표�
 export PATH="$PATH:/usr/local/go/bin/bin"
 ```
 
-
-### hot reloading
-
-```azure
-make run
-```
+공식 문서에서는 air와 연동해서 Hot reloading을 하는 방법을 소개해주고 있는데, 되긴 되는데 도중에 templ 문법을 틀려도 잡아주질 않는다. 뭔가 불완전 
 
 [Go + HTMX + Templ + Tailwind: 프로젝트 설정 완료 및 핫 리로딩](https://medium.com/ostinato-rigore/go-htmx-templ-tailwind-complete-project-setup-hot-reloading-2ca1ba6c28be)
+
+
+# DB Handling
 
 ## sqlc
 
@@ -70,7 +65,7 @@ JVM에서의 JOOQ 같은 걸 기대했는데, 생각보다 더 원시적이다. 
 
 ## go-jet
 
-[go-jet])(https://github.com/go-jet/jet?tab=readme-ov-file#features)
+[go-jet](https://github.com/go-jet/jet?tab=readme-ov-file#features)
 
 ```azure
 $ go get -u github.com/go-jet/jet/v2
@@ -79,27 +74,57 @@ jet -dsn='postgresql://localhost:5432/postgres?sslmode=disable' -schema=public -
 ```
 
 ![img_1.png](img_1.png)
-JOOQ 랑 가장 비슷한 형식의 라이브러리 인 듯 하다. 이걸로 정하자.
 
-## golang에서 테스트 코드란?
+JOOQ 랑 가장 비슷한 형식의 라이브러리인 듯 하다. 이걸로 정하자.
+
+### 트랜잭션 handling
+
+스프링처럼 선언적으로 트랜잭션을 구현 또는 비슷하게 하는 법이 있을까 찾아보다가 영상을 하나 보게 되었는데
+[Transaction Management and Repository Pattern | Ilia Sergunin | Conf42 Golang 2023](https://www.youtube.com/watch?v=aRsea6FFAyA&ab_channel=Conf42)
+고차 함수를 통해서 트랜잭션 AOP를 구현하고 있다. 좋은 생각인 것 같아서, transaction manger inerface를 만들고 
+바로 따라 해볼려고 했으나 문제가..
+```azure
+Interface method must have no type parameters
+```
+Go에서는 interface 함수는 제네릭 타입을 가질 수 없다. 그래서 인터페이스 선언부에 Generice 를 선언하려 했으나..
+
+```azure
+type TransactionHandler[T any] interface {
+	Execute(ctx context.Context, fn func(ctx context.Context) (T, error)) (T, error)
+}
+```
+인터페이스가 인스턴스화될 때 인터페이스의 제네릭 유형을 지정해야 되었다. 따라서 인터페이스 생성 시점부터 제네릭의 유형이
+바인딩되고 변경불가다. 이러면 유연하게 여기저기서 쓸 수가 없다. 나는 하나의 인스턴스로 돌려 쓰고 싶은데, 매번 타입이 달라질 
+때마다 새로 만들 수는 없는 노릇 아닌가.. 구조체도 마찬가지다. 
+관련 재밌는 논의링크 하나 남긴다.
+
+[제안: 사양: 메서드에서 유형 매개변수 허용 #49085](https://github.com/golang/go/issues/49085)
 
 
 
 
-## DI Container in Go?
+
+
+# DI Container in Go?
 
 [wire](https://github.com/google/wire)
+
 [uber/dig](https://github.com/uber-go/dig)
+
 [inject](https://github.com/facebookarchive/inject)
 
-찾아보니.. 크게 위의 3가지 라이브러리가 주로 쓰이고 있는 것 같다. 가급적 수동 DI를 유지하기로 결정  
+찾아보니.. 크게 위의 3가지 라이브러리가 주로 쓰이고 있는 것 같다. Go 진영에서는 DI 라이브러리를 그닥 좋아하지는 않는 것 같다. 가급적 수동 DI를 유지하기로 결정  
 
-## golang에서 환경변수 관리법
+# 환경변수 관리법
 
-godotenv?
+[godotenv](https://github.com/joho/godotenv)
+
+[viper](https://github.com/spf13/viper)
+
+크게 2가지 정도 많이 쓰고 있는 것 같은데, 다양한 포맷과 형식을 지원하는 viper 사용
 
 
-## 프로젝트 구조
+# 프로젝트 구조
 
 [Standard Go Project Layout](https://github.com/golang-standards/project-layout/blob/master/README_ko.md)
 
@@ -107,28 +132,25 @@ godotenv?
 
 [go-gin-boilerplate](https://github.com/vsouza/go-gin-boilerplate)
 
-## GRPC?
+사실 여러 개 문서를 뒤져봐도 딱히 그럴싸한 구조를 선정하지 못하겠다. 그냥 나름대로 Spring mvc와 비슷하게 구성했다.
 
+# GRPC
 
-## golang에서 트랜잭션 관리?
+# 컨벤션
 
-
-## makeFile?
-
-
-## 컨벤션?
+일단 참고용
 
 [뱅크샐러드 Go 코딩 컨벤션](https://blog.banksalad.com/tech/go-best-practice-in-banksalad/)
 
 
-# panic recover 
+# Error Handling
 
+go는 기본적으로 stack trace 정보를 제공해주지 않는다. 처음 봤을 시 조금 충격적이었는데, 아래 글을 많이 참고
+[Golang, 그대들은 어떻게 할 것인가 - 4. error 핸들링](https://d2.naver.com/helloworld/6507662)
 [panic-and-recover-more](https://go101.org/article/panic-and-recover-more.html)
 
+# 후기
 
-
-## Error stack trace
-go는 기본적으로 stack trace 정보를 제공해주지 않는다. 처음 봤을 시 조금 충격적이었는데, 아래 글 보고 어케 한 번 구현해보기로 했다. 
-
-[Golang, 그대들은 어떻게 할 것인가 - 4. error 핸들링](https://d2.naver.com/helloworld/6507662)
-
+간결하고 빠른 언어임에는 분명하지만 프로트엔드 작업하기에는 좋지 않다. 유연하고 풍부한 표현가능한 API가 부족하고
+특히 타입캐스팅 측면에서 항상 짜증나는 부분이 많다. 생태계 측면에서도 서버사이드 템플릿 엔진 중에 가장 성숙한 게 templ
+같은데 수준이 너무 떨어진다. 그래도 나온지 10년이 넘은 언어인데 이 정도가 최선인가? 

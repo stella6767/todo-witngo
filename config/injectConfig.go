@@ -17,7 +17,7 @@ func InitAppDependency(db *sql.DB) *handler.TodoHandler {
 
 	// 레이어 초기화
 	todoRepo := repository.NewTodoRepository(db)
-	todoService := service.NewTodoService(todoRepo)
+	todoService := service.NewTodoService(todoRepo, repository.NewTxHandler(db))
 	todoHandler := handler.NewTodoHandler(todoService)
 
 	return todoHandler

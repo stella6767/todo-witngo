@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/go-jet/jet/v2/postgres"
-	"github.com/go-jet/jet/v2/qrm"
 	"github.com/pkg/errors"
 	"todo-app/.gen/postgres/public/model"
 	"todo-app/.gen/postgres/public/table"
@@ -23,11 +23,11 @@ type TodoRepository interface {
 
 type todoRepository struct {
 	//dbquery의 포인터
-	db qrm.DB
+	db *sql.DB
 }
 
 // 생성자 함수
-func NewTodoRepository(q qrm.DB) TodoRepository {
+func NewTodoRepository(q *sql.DB) TodoRepository {
 	return &todoRepository{db: q}
 }
 
@@ -40,6 +40,9 @@ func (r *todoRepository) DeleteTodoById(ctx context.Context, id int) error {
 }
 
 func (r *todoRepository) CreateTodo(ctx context.Context, title string) (*model.Todo, error) {
+
+	//r.db.BeginTx(ctx, nil)
+
 	stmt := table.Todo.INSERT(table.Todo.Title).
 		VALUES(title).
 		RETURNING(table.Todo.AllColumns)
