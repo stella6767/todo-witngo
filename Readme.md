@@ -162,8 +162,11 @@ go는 기본적으로 stack trace 정보를 제공해주지 않는다. 처음 �
 uname -m && uname -s # 배포할 서버의 os 및 아키텍처 확인 
 
 GOOS=linux GOARCH=arm64 go build -o todoapp # 정적 바이너리 파일 빌드
+    
+scp -i ~/.ssh/{filename}.pem todoapp prod.yaml {user}@{ip}:~/cicd/go-todo    
+    
  ./todoapp # 실행 
-nohup ./todoapp > todoapp.log 2>&1 & 
+nohup env GO_PROFILE=prod ./todoapp > todoapp.log 2>&1 & 
 
 ```
 
@@ -171,5 +174,5 @@ nohup ./todoapp > todoapp.log 2>&1 &
 # 후기
 
 간결하고 빠른 언어임에는 분명하지만 프로트엔드 작업하기에는 좋지 않다. 유연하고 풍부한 표현가능한 API가 부족하고
-특히 타입캐스팅 측면에서 항상 짜증나는 부분이 많다. 생태계 측면에서도 서버사이드 템플릿 엔진 중에 가장 성숙한 게 templ
+(특히 타입캐스팅 측면) 생태계 측면에서도 부족한 게 많다. 그럴싸한 서버사이드 템플릿 엔진 중에 가장 성숙한 게 templ
 같은데 수준이 너무 떨어진다. 그래도 나온지 10년이 넘은 언어인데 이 정도가 최선인가? 
