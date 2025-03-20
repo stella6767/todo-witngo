@@ -18,9 +18,7 @@ func NewTodoService(repo repository.TodoRepository, handler *repository.Transact
 }
 
 func (s *TodoService) CreateTodo(ctx context.Context, task string) (*model.Todo, error) {
-
 	var todo *model.Todo
-
 	err := s.txHandler.Execute(ctx, func(ctx context.Context) error {
 		result, err := s.repo.CreateTodo(ctx, task)
 		if err != nil {

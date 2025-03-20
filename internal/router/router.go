@@ -20,7 +20,7 @@ func NewRouter(todoHandler *handler.TodoHandler) *gin.Engine {
 
 	router.Use(middleware.CustomLogger())
 	router.Use(middleware.ErrorHandler)
-	router.Static("/assets", "./assets")
+	//router.Static("/assets", "./assets")
 
 	registerTodoHandler(todoHandler, router)
 	return router

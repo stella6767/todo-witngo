@@ -1,7 +1,0 @@
-datasource:
-  dbType: "postgres"
-  url: "postgresql://localhost:5432/postgres?sslmode=disable"
-server:
-  port: 8080
-
-  

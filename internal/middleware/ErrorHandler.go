@@ -27,6 +27,7 @@ func ErrorHandler(ctx *gin.Context) {
 		response := errUtil.MakeBaseResponse(code)
 
 		if !isBodyWritten {
+			///todo json 포맷이 아니라, htmx way 로
 			ctx.JSON(statusCode, response)
 		}
 		return

@@ -21,15 +21,19 @@ type Server struct {
 
 type Datasource struct {
 	DbType   string `yaml:"dbType"`
-	Url      string `yaml:"url"`
+	Host     string `yaml:"host"`
+	Port     string `yaml:"port"`
+	Dbname   string `yaml:"dbname"`
 	UserName string `yaml:"userName"`
 	Password string `yaml:"password"`
+	Schema   string `yaml:"schema"`
 }
 
-func LoadConfig() {
+func LoadConfig(profile string) {
+
 	//Named Return Parameters
 	viper.AddConfigPath(".")
-	viper.SetConfigName("config")
+	viper.SetConfigName(profile)
 	viper.SetConfigType("yaml")
 	//viper.AutomaticEnv()
 	err := viper.ReadInConfig()

@@ -18,6 +18,14 @@
 * tailwind
 
 
+
+# Http Framework
+
+Gin과 Echo 크게 두가지가 대중적으로 쓰고 있는듯. 여기서는 GIN을 선택
+[embed로 스태틱 리소스 넣기](https://medium.com/bgpworks/golang-1-16%EC%97%90-%EC%83%88%EB%A1%9C-%EC%B6%94%EA%B0%80%EB%90%9C-%EA%B8%B0%EB%8A%A5-embed%EB%A1%9C-%EC%8A%A4%ED%83%9C%ED%8B%B1-%EB%A6%AC%EC%86%8C%EC%8A%A4-%EB%84%A3%EA%B8%B0-1675c4564f5e)
+[A Guide to Embedding Static Files in Go using go:embed](https://www.iamyadav.com/blogs/a-guide-to-embedding-static-files-in-go)
+
+
 # UI Rendering
 
 ## templ
@@ -148,6 +156,17 @@ type TransactionHandler[T any] interface {
 go는 기본적으로 stack trace 정보를 제공해주지 않는다. 처음 봤을 시 조금 충격적이었는데, 아래 글을 많이 참고
 [Golang, 그대들은 어떻게 할 것인가 - 4. error 핸들링](https://d2.naver.com/helloworld/6507662)
 [panic-and-recover-more](https://go101.org/article/panic-and-recover-more.html)
+
+# build && execute
+```azure
+uname -m && uname -s # 배포할 서버의 os 및 아키텍처 확인 
+
+GOOS=linux GOARCH=arm64 go build -o todoapp # 정적 바이너리 파일 빌드
+ ./todoapp # 실행 
+nohup ./todoapp > todoapp.log 2>&1 & 
+
+```
+
 
 # 후기
 

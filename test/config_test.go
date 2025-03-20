@@ -34,23 +34,17 @@ func TestInitApp(t *testing.T) { // 테스트
 
 func TestViper(t *testing.T) {
 
-	config.LoadConfig()
+	config.LoadConfig("")
 
 }
 
-func TestRepository(t *testing.T) {
+func TestGetTodosByPage(t *testing.T) {
 
-	db, err := sql.Open("postgres", "postgresql://localhost:5432/postgres?sslmode=disable")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	todoRepository := repository.NewTodoRepository(db)
+	_, todoRepository := createTestTodoRepository()
 
 	pageable := dto.Pageable{Page: 0, Size: 10}
 	ctx := context.Background() // 기본 컨텍스트 생성
-	todos := todoRepository.GetTodosByPage(ctx, pageable)
+	todos, _ := todoRepository.GetTodosByPage(ctx, pageable)
 
 	fmt.Println(todos.Total)
 
@@ -67,22 +61,45 @@ func TestRepository(t *testing.T) {
 
 }
 
-func TestUpdateTodoStatus(t *testing.T) {
-	ctx, err, todoRepository := createTestTodoRepository()
+func loadTestDb() *sql.DB {
 
-	_, err = errorWrapTest(err, todoRepository, ctx)
+	//db, err := sql.Open("postgres", "postgresql://localhost:5432/postgres?sslmode=disable")
+
+	connStr := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s search_path=%s",
+		"localhost",
+		"5432",
+		"postgres",
+		"1234",
+		"postgres",
+		"disable",
+		"public",
+	)
+
+	db, err := sql.Open("postgres", connStr)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
-		log.WithError(err).Error("", err)
+		panic(err)
 	}
+	return db
+}
+
+func TestUpdateTodoStatus(t *testing.T) {
+	//ctx, todoRepository := createTestTodoRepository()
+	//
+	//_, err = errorWrapTest(err, todoRepository, ctx)
+	//
+	//if err != nil {
+	//	fmt.Printf("%+v\n", err)
+	//	log.WithError(err).Error("", err)
+	//}
 
 }
 
 func TestCreateTodo(t *testing.T) {
-	ctx, _, todoRepository := createTestTodoRepository()
+	ctx, todoRepository := createTestTodoRepository()
 
-	todo, err := todoRepository.CreateTodo(ctx, "task1")
+	todo, err := todoRepository.CreateTodo(ctx, "task???")
 
 	if err != nil {
 		log.WithError(err).Error("", err)
@@ -91,13 +108,9 @@ func TestCreateTodo(t *testing.T) {
 	fmt.Println(todo)
 }
 
-func createTestTodoRepository() (context.Context, error, repository.TodoRepository) {
+func createTestTodoRepository() (context.Context, repository.TodoRepository) {
 	ctx := context.Background() // 기본 컨텍스트 생성
-	db, err := sql.Open("postgres", "postgresql://localhost:5432/postgres?sslmode=disable")
-
-	if err != nil {
-		panic(err)
-	}
+	db := loadTestDb()
 
 	log.SetFormatter(&util.PrettyFormatter{
 		TextFormatter: log.TextFormatter{
@@ -107,7 +120,7 @@ func createTestTodoRepository() (context.Context, error, repository.TodoReposito
 	})
 
 	todoRepository := repository.NewTodoRepository(db)
-	return ctx, err, todoRepository
+	return ctx, todoRepository
 }
 
 func errorWrapTest(err error, todoRepository repository.TodoRepository, ctx context.Context) (model.Todo, error) {
